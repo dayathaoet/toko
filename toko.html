@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Halaman Affiliate Saya</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #f0f4f8;
+        margin: 0;
+        padding: 0;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 2rem 1rem;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      main {
+        padding: 2rem 1rem;
+        max-width: 900px;
+        margin: 0 auto;
+        flex-grow: 1;
+      }
+      form {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+      form input,
+      form textarea {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 1rem;
+      }
+      form button {
+        background: #764ba2;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 40px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      form button:hover {
+        background: #9674c2;
+      }
+      .link-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+      .affiliate-link-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        position: relative;
+      }
+      .affiliate-link-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      }
+      .affiliate-link-card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+      }
+      .affiliate-link-card h3 {
+        margin: 0 0 0.75rem 0;
+        color: #764ba2;
+        font-size: 1.3rem;
+      }
+      .affiliate-link-card p {
+        margin: 0 0 1.25rem 0;
+        color: #555;
+        font-size: 1rem;
+      }
+      .affiliate-link-card .btn {
+        background: #764ba2;
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 40px;
+        text-align: center;
+        font-weight: 600;
+        transition: background 0.3s ease;
+        margin: 0.25rem 0;
+        display: inline-block;
+      }
+      .affiliate-link-card .btn:hover {
+        background: #9674c2;
+      }
+      footer {
+        text-align: center;
+        background: #3a2a6b;
+        color: #ddd;
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Halaman Affiliate Saya</h1>
+      <p>Tambah produk langsung dari sini!</p>
+    </header>
+
+    <main>
+      <form id="produkForm">
+        <input type="text" id="judul" placeholder="Judul Produk" required />
+        <textarea
+          id="deskripsi"
+          placeholder="Deskripsi Produk"
+          required
+        ></textarea>
+        <input type="file" id="gambar" accept="image/*" />
+        <input type="url" id="link" placeholder="Link Affiliate" required />
+        <input
+          type="text"
+          id="tombol"
+          placeholder="Teks Tombol"
+          required
+          value="Kunjungi Sekarang"
+        />
+        <button type="submit">Tambah Produk</button>
+      </form>
+
+      <div class="link-container" id="produkContainer"></div>
+    </main>
+
+    <footer>&copy; 2024 Halaman Affiliate. Dibuat dengan cinta 💜</footer>
+
+    <script>
+      const produkContainer = document.getElementById("produkContainer");
+      const produkForm = document.getElementById("produkForm");
+      const fileInput = document.getElementById("gambar");
+      let produkList = JSON.parse(localStorage.getItem("produkList")) || [];
+      let editIndex = null; // Untuk mode edit
+
+      function renderProduk() {
+        produkContainer.innerHTML = "";
+        produkList.forEach((produk, index) => {
+          const card = document.createElement("div");
+          card.className = "affiliate-link-card";
+          card.innerHTML = `
+            <img src="${produk.gambar}" alt="${produk.judul}" />
+            <h3>${produk.judul}</h3>
+            <p>${produk.deskripsi}</p>
+            <a class="btn" href="${produk.link}" target="_blank" rel="noopener noreferrer">${produk.tombol}</a>
+            <button class="btn edit-btn" data-index="${index}">Edit</button>
+            <button class="btn delete-btn" data-index="${index}" style="background:#e74c3c;">Hapus</button>
+          `;
+          produkContainer.appendChild(card);
+        });
+
+        // Tambahkan event listener ke tombol edit dan hapus
+        document.querySelectorAll(".edit-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const index = e.target.dataset.index;
+            editProduk(index);
+          });
+        });
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const index = e.target.dataset.index;
+            hapusProduk(index);
+          });
+        });
+      }
+
+      produkForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const judul = document.getElementById("judul").value;
+        const deskripsi = document.getElementById("deskripsi").value;
+        const link = document.getElementById("link").value;
+        const tombol = document.getElementById("tombol").value;
+
+        const saveProduk = (gambarBase64) => {
+          const produkData = {
+            judul,
+            deskripsi,
+            gambar: gambarBase64,
+            link,
+            tombol,
+          };
+
+          if (editIndex !== null) {
+            // Update data jika sedang edit
+            produkList[editIndex] = produkData;
+            editIndex = null;
+            produkForm.querySelector("button").textContent = "Tambah Produk";
+          } else {
+            produkList.push(produkData);
+          }
+
+          localStorage.setItem("produkList", JSON.stringify(produkList));
+          renderProduk();
+          produkForm.reset();
+        };
+
+        if (fileInput.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            saveProduk(event.target.result);
+          };
+          reader.readAsDataURL(fileInput.files[0]);
+        } else {
+          // Jika sedang edit dan tidak upload gambar baru
+          if (editIndex !== null) {
+            saveProduk(produkList[editIndex].gambar);
+          } else {
+            alert("Pilih gambar produk!");
+          }
+        }
+      });
+
+      function editProduk(index) {
+        const produk = produkList[index];
+        document.getElementById("judul").value = produk.judul;
+        document.getElementById("deskripsi").value = produk.deskripsi;
+        document.getElementById("link").value = produk.link;
+        document.getElementById("tombol").value = produk.tombol;
+        editIndex = index;
+        produkForm.querySelector("button").textContent = "Update Produk";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function hapusProduk(index) {
+        if (confirm("Yakin ingin menghapus produk ini?")) {
+          produkList.splice(index, 1);
+          localStorage.setItem("produkList", JSON.stringify(produkList));
+          renderProduk();
+        }
+      }
+
+      renderProduk();
+    </script>
+  </body>
+</html>

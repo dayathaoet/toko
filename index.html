@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Halaman Affiliate Saya</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #f0f4f8;
+        margin: 0;
+        padding: 0;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 2.5rem 1rem;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2.75rem;
+        font-weight: 600;
+      }
+      header p {
+        margin: 0.5rem 0 0;
+        font-size: 1.2rem;
+        color: #d6d6ff;
+      }
+      main {
+        padding: 2rem 1rem 3rem;
+        max-width: 900px;
+        margin: 0 auto;
+        flex-grow: 1;
+      }
+      .link-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Maksimal 2 kolom */
+        gap: 5rem;
+        justify-items: center;
+      }
+      .affiliate-link-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        width: 100%;
+      }
+      .affiliate-link-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      }
+      .affiliate-link-card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+      }
+      .affiliate-link-card h3 {
+        margin: 0 0 0.75rem 0;
+        color: #764ba2;
+        font-weight: 600;
+        font-size: 1.3rem;
+      }
+      .affiliate-link-card p {
+        flex-grow: 1;
+        margin: 0 0 1.25rem 0;
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+      .affiliate-link-card a.btn {
+        background: #764ba2;
+        color: white;
+        text-decoration: none;
+        padding: 0.75rem 1.6rem;
+        border-radius: 40px;
+        font-weight: 600;
+        text-align: center;
+        transition: background-color 0.3s ease;
+      }
+      .affiliate-link-card a.btn:hover {
+        background: #9674c2;
+      }
+      footer {
+        text-align: center;
+        background: #3a2a6b;
+        color: #ddd;
+        padding: 1rem 1rem;
+        font-size: 0.9rem;
+      }
+      @media (max-width: 768px) {
+        .link-container {
+          grid-template-columns: 1fr; /* Satu kolom di layar kecil */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Halaman Affiliate Saya</h1>
+      <p>Tambah produk langsung dari sini!</p>
+    </header>
+
+    <main>
+      <form id="produkForm"></form>
+      <div class="link-container" id="produkContainer"></div>
+    </main>
+
+    <footer>&copy; 2024 Halaman Affiliate. Dibuat dengan cinta 💜</footer>
+
+    <script>
+      const produkContainer = document.getElementById("produkContainer");
+      const produkForm = document.getElementById("produkForm");
+      let produkList = JSON.parse(localStorage.getItem("produkList")) || [];
+
+      function renderProduk() {
+        produkContainer.innerHTML = "";
+        produkList.forEach((produk) => {
+          const card = document.createElement("div");
+          card.className = "affiliate-link-card";
+          card.innerHTML = `
+            <img src="${produk.gambar}" alt="${produk.judul}" />
+            <h3>${produk.judul}</h3>
+            <p>${produk.deskripsi}</p>
+            <a class="btn" href="${produk.link}" target="_blank" rel="noopener noreferrer">${produk.tombol}</a>
+          `;
+          produkContainer.appendChild(card);
+        });
+      }
+
+      renderProduk();
+    </script>
+  </body>
+</html>
